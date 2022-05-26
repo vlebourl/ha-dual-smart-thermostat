@@ -94,7 +94,7 @@ async def preflight():
         logger.info(f"Actor: {GITHUB_ACTOR}")
     else:
         category = CATEGORY.lower()
-        pr = True if event_data.get("pull_request") is not None else False
+        pr = event_data.get("pull_request") is not None
         if pr:
             head = event_data["pull_request"]["head"]
             ref = head["ref"]

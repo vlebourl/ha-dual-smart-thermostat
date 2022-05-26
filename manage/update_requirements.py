@@ -3,28 +3,28 @@ import os
 
 import requests
 
-harequire = []
 request = requests.get(
     "https://raw.githubusercontent.com/home-assistant/home-assistant/dev/setup.py"
 )
 request = request.text.split("REQUIRES = [")[1].split("]")[0].split("\n")
-for req in request:
-    if "=" in req:
-        harequire.append(req.split(">")[0].split("=")[0].split('"')[1])
+harequire = [
+    req.split(">")[0].split("=")[0].split('"')[1]
+    for req in request
+    if "=" in req
+]
 
 print(harequire)
 
 with open(f"{os.getcwd()}/custom_components/hacs/manifest.json") as manifest:
     manifest = json.load(manifest)
-    requirements = []
-    for req in manifest["requirements"]:
-        requirements.append(req.split(">")[0].split("=")[0])
+    requirements = [
+        req.split(">")[0].split("=")[0] for req in manifest["requirements"]
+    ]
+
     manifest["requirements"] = requirements
 with open(f"{os.getcwd()}/requirements.txt") as requirements:
     tmp = requirements.readlines()
-    requirements = []
-    for req in tmp:
-        requirements.append(req.replace("\n", ""))
+    requirements = [req.replace("\n", "") for req in tmp]
 for req in requirements:
     if req.split(">")[0].split("=")[0] in manifest["requirements"]:
         manifest["requirements"].remove(req.split(">")[0].split("=")[0])
